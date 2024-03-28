@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Titillium+Web:wght@600&display=swap');
+
+
+:root {
+    --logo-color: #5CB85E;
+    --banner-color: #5CB85C;
+    --footer-background-color: #f3f3f3;
+}
+
+.App {
+    height: 100dvh;
+}
+
+
+.logo {
+    color: var(--logo-color) !important;
+    font-family: "Titillium Web", sans-serif !important;
+    font-weight: 900 !important;
+}

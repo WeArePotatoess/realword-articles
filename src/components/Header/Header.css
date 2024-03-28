@@ -1,0 +1,7 @@
+header .nav-link:hover {
+    color: rgba(0, 0, 0, 0.77) !important;
+}
+
+.nav-item .active {
+    color: black !important;
+}
