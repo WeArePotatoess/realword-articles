@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Button, Container, Form } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 
-const SignIn = () => {
+const SignIn = ({ setUser }) => {
     const navigate = useNavigate();
 
     const [signInInfo, setSignInInfo] = useState({
@@ -21,6 +21,7 @@ const SignIn = () => {
             .then(data => {
                 setSigningIn(false);
                 setErr([]);
+                setUser(data.user);
                 localStorage.setItem('token', data.user.token);
                 navigate('/');
             })

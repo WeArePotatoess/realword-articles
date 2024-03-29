@@ -9,25 +9,37 @@ import axios from 'axios';
 import Home from './layouts/Home';
 import Reference from './components/Reference';
 import UserProfile from './layouts/UserProfile';
+import ArticleDetail from './layouts/ArticleDetail';
+import { useEffect, useState } from 'react';
 
 function App() {
   axios.defaults.baseURL = "https://api.realworld.io/api";
   axios.defaults.headers.common['Authorization'] = "Token " + localStorage.getItem('token');
 
-
-
+  const [user, setUser] = useState();
   
+  useEffect(() => {
+    const cancelToken = axios.CancelToken;
+    const source = cancelToken.source();
+    axios.get('/user', { cancelToken: source.token })
+      .then(res => res.data)
+      .then(data => setUser(data.user))
+      .catch(err => console.log(err));
+    return () => { source.cancel(); }
+  }, [])
+
   return (
     <div className="App d-flex flex-column">
-      <Container>
-        <Header />
+      <Container className='w-75'>
+        <Header user={user} />
       </Container>
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/home' element={<Navigate to={'/'} />} />
-        <Route path='/login' element={<SignIn />} />
-        <Route path='/register' element={<SignUp />} />
+        <Route path='/login' element={<SignIn setUser={setUser} />} />
+        <Route path='/register' element={<SignUp setUser={setUser} />} />
         <Route path='/:username' element={<UserProfile />} />
+        <Route path='/article/:slug' element={<ArticleDetail />} />
         <Route path='/*' element={<Navigate to={'/'} />} />
       </Routes>
       <Reference />

@@ -19,7 +19,10 @@ const UserProfile = () => {
         const source = cancelToken.source();
         axios.get(`/profiles/${username.replace('@', '')}`, { cancelToken: source.token })
             .then(res => res.data)
-            .then(data => setProfile(data.profile))
+            .then(data => {
+                console.log(data)
+                setProfile(data.profile)
+            })
             .catch(err => console.log(err));
         return () => {
             source.cancel();
@@ -45,21 +48,65 @@ const UserProfile = () => {
         //     .then(data => console.log(data))
         //     .catch(err => console.log(err))
     }
+    const handleToggleFavorite = (index, slug, favorited) => {
+        if (favorited) {
+            const updatedArticles = articles.map((article, i) => {
+                if (i === index) return { ...article, favorited: false };
+                else return article;
+            })
+            setArticles(updatedArticles);
+            axios.delete('/articles/' + slug + '/favorite')
+                .then(res => res.data)
+                .then(data => {
+                    console.log(data)
+                }
+                )
+                .catch(err => {
+                    const updatedArticles = articles.map((article, i) => {
+                        if (i === index) return { ...article, favorited: true };
+                        else return article;
+                    })
+                    setArticles(updatedArticles);
+                    console.log(err)
+                });
+        }
+        else {
+            const updatedArticles = articles.map((article, i) => {
+                if (i === index) return { ...article, favorited: true };
+                else return article;
+            })
+            setArticles(updatedArticles);
+            axios.post('/articles/' + slug + '/favorite')
+                .then(res => res.data)
+                .then(data => {
+
+                    console.log(data);
+                })
+                .catch(err => {
+                    const updatedArticles = articles.map((article, i) => {
+                        if (i === index) return { ...article, favorited: false };
+                        else return article;
+                    })
+                    setArticles(updatedArticles);
+                    console.log(err)
+                });
+        }
+    }
 
     return (<>
         {profile ?
             <>
                 <div className="profile-banner mb-4">
-                    <Container className="align-items-center py-3 d-flex flex-column">
+                    <Container className="align-items-center py-3 d-flex flex-column w-75 g-5">
                         <img src={profile.image} alt="user avatar" className="user-avatar mb-3" />
-                        <h2 className="fw-bold">{profile.username}</h2>
+                        <h4 className="fw-bold">{profile.username}</h4>
                         <Button onClick={handleFollow} className="p-1 align-self-end" variant="outline-secondary">
                             <FontAwesomeIcon icon={faPlus} className="me-1" />
                             Follow {profile.username}
                         </Button>
                     </Container>
                 </div>
-                <Container className="flex-grow-1 articles">
+                <Container className="flex-grow-1 articles w-75 g-5">
                     <Nav
                         variant="underline"
                         className="border-bottom gap-0"
@@ -69,8 +116,8 @@ const UserProfile = () => {
                         <Nav.Link className="text-secondary" eventKey={'my articles'}>My Articles</Nav.Link>
                         <Nav.Link className="text-secondary" eventKey={'favorited articles'}>Favorited Articles</Nav.Link>
                     </Nav>
-                    {articles.length > 0 ? articles.map(articles => {
-                        return <Article article={articles} key={articles.title} />
+                    {articles.length > 0 ? articles.map((articles, index) => {
+                        return <Article article={articles} index={index} key={articles.title} handleToggleFavorite={handleToggleFavorite} />
                     }) : <div className="mt-2">Loading articles...</div>}
                 </Container>
             </> : <Container className="flex-grow-1 h5">Loading...</Container>}

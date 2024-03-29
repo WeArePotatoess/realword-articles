@@ -5,7 +5,7 @@ import { useState } from "react";
 import axios from "axios";
 
 
-const SignUp = () => {
+const SignUp = ({ setUser }) => {
 
     const [signUpInfo, setSignUpInfo] = useState({
         username: '',
@@ -24,6 +24,7 @@ const SignUp = () => {
             .then(data => {
                 setSigningUp(false); setErr([]);
                 localStorage.setItem('token', data.user.token);
+                setUser(data.user);
                 navigate('/');
             })
             .catch(e => e.response.data.errors)

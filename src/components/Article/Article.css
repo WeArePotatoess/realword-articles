@@ -1,0 +1,41 @@
+.created {
+    font-size: .8rem !important;
+}
+
+a.author {
+    color: var(--banner-color);
+}
+
+a.author:not(:hover) {
+    text-decoration: none !important;
+}
+
+.favorite-article {
+    border-color: var(--banner-color) !important;
+}
+
+.favorite-article:not(:hover) {
+    color: var(--banner-color) !important;
+}
+
+.favorite-article:not(:hover).btn-success {
+    color: white !important;
+    background-color: var(--banner-color) !important;
+}
+
+button.favorite-article:hover {
+    background-color: var(--banner-color);
+}
+
+.favorite-article.btn-success:hover {
+    background-color: #fff;
+    color: var(--banner-color);
+}
+
+.article-footer {
+    font-size: .8rem;
+}
+
+.article-footer span {
+    cursor: pointer;
+}

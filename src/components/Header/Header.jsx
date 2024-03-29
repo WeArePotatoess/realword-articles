@@ -1,23 +1,23 @@
 import { Col, Nav, Row } from "react-bootstrap";
 import { Link, useLocation } from "react-router-dom";
 import './Header.css';
-import { memo, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGear, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
-const Header = () => {
+const Header = ({ user }) => {
     const location = useLocation();
-    const [user, setUser] = useState();
+    // const [user, setUser] = useState();
 
-    useEffect(() => {
-        const cancelToken = axios.CancelToken;
-        const source = cancelToken.source();
-        axios.get('/user', { cancelToken: source.token })
-            .then(res => res.data)
-            .then(data => setUser(data.user))
-            .catch(err => console.log(err));
-        return () => { source.cancel(); }
-    }, [])
+    // useEffect(() => {
+    //     const cancelToken = axios.CancelToken;
+    //     const source = cancelToken.source();
+    //     axios.get('/user', { cancelToken: source.token })
+    //         .then(res => res.data)
+    //         .then(data => setUser(data.user))
+    //         .catch(err => console.log(err));
+    //     return () => { source.cancel(); }
+    // }, [])
 
 
 
@@ -67,4 +67,4 @@ const Header = () => {
     );
 }
 
-export default memo(Header);
+export default Header;
