@@ -8,7 +8,7 @@ import { faHeart } from "@fortawesome/free-solid-svg-icons";
 
 const Article = ({ handleToggleFavorite, article, index }) => {
     return (
-        <Container className="article py-3 border-bottom">
+        <Container className="article py-3 border-top">
             <Row>
                 <Col className="d-flex align-items-center gap-2">
                     <img src={article.author.image} alt="author avatar" className="rounded-circle" />

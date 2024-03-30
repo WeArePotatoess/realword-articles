@@ -7,7 +7,6 @@ import SignUp from './layouts/SignUp';
 import SignIn from './layouts/SignIn';
 import axios from 'axios';
 import Home from './layouts/Home';
-import Reference from './components/Reference';
 import UserProfile from './layouts/UserProfile';
 import ArticleDetail from './layouts/ArticleDetail';
 import { useEffect, useState } from 'react';
@@ -17,7 +16,7 @@ function App() {
   axios.defaults.headers.common['Authorization'] = "Token " + localStorage.getItem('token');
 
   const [user, setUser] = useState();
-  
+
   useEffect(() => {
     const cancelToken = axios.CancelToken;
     const source = cancelToken.source();
@@ -42,7 +41,6 @@ function App() {
         <Route path='/article/:slug' element={<ArticleDetail />} />
         <Route path='/*' element={<Navigate to={'/'} />} />
       </Routes>
-      <Reference />
       <Footer />
     </div>
   );

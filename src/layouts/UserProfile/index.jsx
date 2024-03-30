@@ -1,4 +1,4 @@
-import { Button, Container, Nav } from "react-bootstrap";
+import { Button, Container } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import './UserProfile.css';
 import { useEffect, useState } from "react";
@@ -7,12 +7,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { getArticles } from "../../fetchData";
 import Article from "../../components/Article";
+import ArticlesNavigator from "../../components/ArticlesNavigator";
+import Paging from "../../components/Paging";
+import { getArticlesLimit } from "../../constances";
 
 const UserProfile = () => {
     const { username } = useParams();
     const [profile, setProfile] = useState(undefined);
     const [articles, setArticles] = useState([]);
     const [articlesCount, setArticlesCount] = useState(0);
+
+
 
     useEffect(() => {
         const cancelToken = axios.CancelToken;
@@ -27,7 +32,7 @@ const UserProfile = () => {
         return () => {
             source.cancel();
         }
-    }, [])
+    }, [username])
     useEffect(() => {
         if (profile)
             getArticles({ author: profile.username })
@@ -38,12 +43,12 @@ const UserProfile = () => {
                 .catch(err => console.log(err))
     }, [profile])
 
-
     const handleFollow = () => {
         console.log('follow ' + profile.username);
     }
 
     const handleViewArticles = (eventKey) => {
+        console.log(eventKey)
         // getArticles({ author: profile.username })
         //     .then(data => console.log(data))
         //     .catch(err => console.log(err))
@@ -107,18 +112,20 @@ const UserProfile = () => {
                     </Container>
                 </div>
                 <Container className="flex-grow-1 articles w-75 g-5">
-                    <Nav
-                        variant="underline"
-                        className="border-bottom gap-0"
-                        defaultActiveKey={'my articles'}
-                        onSelect={(eventKey) => handleViewArticles(eventKey)}
-                    >
-                        <Nav.Link className="text-secondary" eventKey={'my articles'}>My Articles</Nav.Link>
-                        <Nav.Link className="text-secondary" eventKey={'favorited articles'}>Favorited Articles</Nav.Link>
-                    </Nav>
-                    {articles.length > 0 ? articles.map((articles, index) => {
-                        return <Article article={articles} index={index} key={articles.title} handleToggleFavorite={handleToggleFavorite} />
-                    }) : <div className="mt-2">Loading articles...</div>}
+                    <ArticlesNavigator handleViewArticles={handleViewArticles} tabs={['My Articles', 'Favorited Articles']} />
+                    {articles.length > 0 ?
+                        <>
+                            {articles.map((articles, index) => {
+                                return <Article article={articles} index={index} key={articles.title} handleToggleFavorite={handleToggleFavorite} />
+                            })}
+                            {articlesCount > getArticlesLimit &&
+                                <Paging
+                                    total={articlesCount}
+                                    limit={getArticlesLimit}
+                                    onSelect={(page) => console.log(page)}
+                                />}
+                        </>
+                        : <div className="mt-2">Loading articles...</div>}
                 </Container>
             </> : <Container className="flex-grow-1 h5">Loading...</Container>}
     </>

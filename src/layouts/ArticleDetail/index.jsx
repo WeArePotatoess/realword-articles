@@ -20,7 +20,7 @@ const ArticleDetail = () => {
         getArticle(params.slug)
             .then(article => setArticle(article))
             .catch(err => console.log(err));
-    }, [])
+    }, [params.slug])
 
     return (
         <>
