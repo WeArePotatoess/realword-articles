@@ -2,16 +2,12 @@
     background-color: var(--footer-background-color);
 }
 
-.articles .nav a {
-    padding: .6rem 1rem;
-}
-
-.articles .nav a.active {
-    font-weight: 400;
-    color: var(--banner-color) !important;
-}
 
 .user-avatar {
     width: 100px;
     border-radius: 100%;
+}
+
+a.go-to-settings:hover {
+    color: white !important;
 }

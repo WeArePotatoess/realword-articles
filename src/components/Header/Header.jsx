@@ -1,25 +1,10 @@
 import { Col, Nav, Row } from "react-bootstrap";
 import { Link, useLocation } from "react-router-dom";
 import './Header.css';
-import { useEffect, useState } from "react";
-import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGear, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 const Header = ({ user }) => {
     const location = useLocation();
-    // const [user, setUser] = useState();
-
-    // useEffect(() => {
-    //     const cancelToken = axios.CancelToken;
-    //     const source = cancelToken.source();
-    //     axios.get('/user', { cancelToken: source.token })
-    //         .then(res => res.data)
-    //         .then(data => setUser(data.user))
-    //         .catch(err => console.log(err));
-    //     return () => { source.cancel(); }
-    // }, [])
-
-
 
     return (
         <header className="py-2">
@@ -48,13 +33,13 @@ const Header = ({ user }) => {
                                 </Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Link className="nav-link text-black-50">
+                                <Link className={`nav-link text-black-50 ${location.pathname === '/settings' ? 'active' : ""}`} to={'/settings'}>
                                     <FontAwesomeIcon icon={faGear} className="me-1" />
                                     Settings
                                 </Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Link className="nav-link text-black-50">
+                                <Link className={`nav-link text-black-50 ${location.pathname === `/${user.username}` ? 'active' : ""}`} to={`/${user.username}`}>
                                     {user.username}
                                 </Link>
                             </Nav.Item>

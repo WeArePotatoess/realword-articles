@@ -7,6 +7,7 @@ import SignUp from './layouts/SignUp';
 import SignIn from './layouts/SignIn';
 import axios from 'axios';
 import Home from './layouts/Home';
+import Settings from './layouts/Settings';
 import UserProfile from './layouts/UserProfile';
 import ArticleDetail from './layouts/ArticleDetail';
 import { useEffect, useState } from 'react';
@@ -37,7 +38,8 @@ function App() {
         <Route path='/home' element={<Navigate to={'/'} />} />
         <Route path='/login' element={<SignIn setUser={setUser} />} />
         <Route path='/register' element={<SignUp setUser={setUser} />} />
-        <Route path='/:username' element={<UserProfile />} />
+        <Route path='/settings' element={<Settings />}/>
+        <Route path='/:username' element={<UserProfile user={user} />} />
         <Route path='/article/:slug' element={<ArticleDetail />} />
         <Route path='/*' element={<Navigate to={'/'} />} />
       </Routes>

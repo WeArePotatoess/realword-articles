@@ -1,16 +1,15 @@
-import { useState } from "react";
 import { Pagination } from "react-bootstrap";
+import './Paging.css'
 
 const Paging = ({ limit = 1, offset = 0, total, size, onSelect }) => {
 
-  const [currentPage, setCurrentPage] = useState(1);
+  // const [currentPage, setCurrentPage] = useState(1);
   const items = []
-  for (let i = 1; i <= Math.floor(total / limit); i++) {
+  for (let i = 1; i <= Math.ceil(total / limit); i++) {
     items.push(
       <Pagination.Item key={i}
-        active={i === currentPage}
+        active={i === (offset / limit) + 1}
         onClick={() => {
-          setCurrentPage(i);
           onSelect(i);
         }}
       >

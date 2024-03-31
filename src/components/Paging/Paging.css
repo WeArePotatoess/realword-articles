@@ -1,0 +1,10 @@
+.pagination .page-item .page-link {
+    border-color: var(--banner-color) !important;
+    color: var(--banner-color) !important;
+}
+
+.pagination .page-item.active .page-link {
+    border-color: var(--banner-color) !important;
+    background-color: var(--banner-color);
+    color: white !important;
+}
