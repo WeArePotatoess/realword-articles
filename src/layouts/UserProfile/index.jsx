@@ -23,7 +23,7 @@ const UserProfile = ({ user }) => {
     useEffect(() => {
         const cancelToken = axios.CancelToken;
         const source = cancelToken.source();
-        axios.get(`/profiles/${username.replace('@', '')}`, { cancelToken: source.token })
+        axios.get(`/profiles/${username}`, { cancelToken: source.token })
             .then(res => res.data)
             .then(data => {
                 setProfile(data.profile);

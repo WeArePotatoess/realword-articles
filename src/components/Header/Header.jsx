@@ -10,7 +10,7 @@ const Header = ({ user }) => {
         <header className="py-2">
             <Row>
                 <Col xs={3} xl={6} className="d-flex align-items-center">
-                    <Link className="text-decoration-none fs-5 logo" to={'#/'}>conduit</Link>
+                    <Link className="text-decoration-none fs-5 logo" to={'/'}>conduit</Link>
                 </Col>
                 <Col>
                     <Nav className="justify-content-end ">
