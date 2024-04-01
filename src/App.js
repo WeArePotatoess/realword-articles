@@ -13,6 +13,7 @@ import ArticleDetail from './layouts/ArticleDetail';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { setUser } from './slices/userSlice';
+import Editor from './layouts/Editor';
 
 
 function App() {
@@ -45,6 +46,8 @@ function App() {
         <Route path='/login' element={<SignIn />} />
         <Route path='/register' element={<SignUp />} />
         <Route path='/settings' element={<Settings />} />
+        <Route path='/editor' element={<Editor />} />
+        <Route path='/editor/:slug' element={<Editor />} />
         <Route path='/:username' element={<UserProfile />} />
         <Route path='/article/:slug' element={<ArticleDetail />} />
         <Route path='/*' element={<Navigate to={'/'} />} />

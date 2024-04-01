@@ -30,7 +30,7 @@ const Header = () => {
                         </>}
                         {user && <>
                             <Nav.Item>
-                                <Link className="nav-link text-black-50">
+                                <Link className="nav-link text-black-50" to={'/editor'}>
                                     <FontAwesomeIcon icon={faPenToSquare} className="me-1" />
                                     New Article
                                 </Link>
