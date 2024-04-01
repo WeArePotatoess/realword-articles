@@ -116,6 +116,7 @@ const UserProfile = () => {
                         <Container className="align-items-center py-3 d-flex flex-column w-75 g-5">
                             <img src={profile.image} alt="user avatar" className="user-avatar mb-3" />
                             <h4 className="fw-bold">{profile?.username}</h4>
+                            <p className="text-black-50">{profile?.bio}</p>
                             {profile?.username === user?.username ?
                                 <Link to={'/settings'} className="btn btn-outline-secondary p-1 align-self-end go-to-settings text-decoration-none text-secondary">
                                     <FontAwesomeIcon icon={faGear} /> Edit Profile Settings
