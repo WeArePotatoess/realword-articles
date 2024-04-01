@@ -11,19 +11,27 @@ import Settings from './layouts/Settings';
 import UserProfile from './layouts/UserProfile';
 import ArticleDetail from './layouts/ArticleDetail';
 import { useEffect, useState } from 'react';
+import { UseSelector, useDispatch, useSelector } from 'react-redux';
+import { setUser } from './slices/userSlice';
+
 
 function App() {
   axios.defaults.baseURL = "https://api.realworld.io/api";
   axios.defaults.headers.common['Authorization'] = "Token " + (localStorage.getItem('token') != null ? localStorage.getItem('token') : '');
 
-  const [user, setUser] = useState();
+  // const [user, setUser] = useState();
+  const user = useSelector(state => state.user.value);
+  const dispatch = useDispatch();
+
 
   useEffect(() => {
     const cancelToken = axios.CancelToken;
     const source = cancelToken.source();
     axios.get('/user', { cancelToken: source.token })
       .then(res => res.data)
-      .then(data => setUser(data.user))
+      .then(data => {
+        dispatch(setUser(data.user));
+      })
       .catch(err => console.log(err));
     return () => { source.cancel(); }
   }, [])
@@ -31,16 +39,16 @@ function App() {
   return (
     <div className="App d-flex flex-column">
       <Container className='w-75'>
-        <Header user={user} />
+        <Header />
       </Container>
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/home' element={<Navigate to={'/'} />} />
-        <Route path='/login' element={<SignIn setUser={setUser} />} />
-        <Route path='/register' element={<SignUp setUser={setUser} />} />
+        <Route path='/login' element={<SignIn />} />
+        <Route path='/register' element={<SignUp />} />
         <Route path='/settings' element={<Settings />} />
-        <Route path='/:username' element={<UserProfile user={user} />} />
-        <Route path='/article/:slug' element={<ArticleDetail user={user} />} />
+        <Route path='/:username' element={<UserProfile />} />
+        <Route path='/article/:slug' element={<ArticleDetail />} />
         <Route path='/*' element={<Navigate to={'/'} />} />
       </Routes>
       <Footer />

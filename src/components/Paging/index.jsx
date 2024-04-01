@@ -18,7 +18,7 @@ const Paging = ({ limit = 1, offset = 0, total, size, onSelect }) => {
     )
   }
   return (
-    <Pagination size={size || ''}>
+    <Pagination className="d-flex flex-wrap" size={size || ''}>
       {items}
     </Pagination>
   );

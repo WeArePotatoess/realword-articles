@@ -3,9 +3,11 @@ import { Link, useNavigate } from "react-router-dom";
 import './SignUp.css'
 import { useState } from "react";
 import axios from "axios";
+import { setUser } from "../../slices/userSlice";
+import { useDispatch } from "react-redux";
 
 
-const SignUp = ({ setUser }) => {
+const SignUp = () => {
 
     const [signUpInfo, setSignUpInfo] = useState({
         username: '',
@@ -15,6 +17,7 @@ const SignUp = ({ setUser }) => {
     const [signingUp, setSigningUp] = useState(false);
     const [err, setErr] = useState({});
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const handleSignUp = (e) => {
         e.preventDefault();
@@ -24,7 +27,7 @@ const SignUp = ({ setUser }) => {
             .then(data => {
                 setSigningUp(false); setErr([]);
                 localStorage.setItem('token', data.user.token);
-                setUser(data.user);
+                dispatch(setUser(data.user));
                 navigate('/');
             })
             .catch(e => e.response.data.errors)

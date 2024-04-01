@@ -1,10 +1,13 @@
 import axios from "axios";
 import { useState } from "react";
 import { Button, Container, Form } from "react-bootstrap";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { setUser } from "../../slices/userSlice";
 
-const SignIn = ({ setUser }) => {
+const SignIn = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const [signInInfo, setSignInInfo] = useState({
         email: '',
@@ -21,7 +24,7 @@ const SignIn = ({ setUser }) => {
             .then(data => {
                 setSigningIn(false);
                 setErr([]);
-                setUser(data.user);
+                dispatch(setUser(data.user))
                 localStorage.setItem('token', data.user.token);
                 navigate('/');
             })

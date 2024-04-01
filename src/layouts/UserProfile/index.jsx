@@ -1,5 +1,5 @@
 import { Button, Container } from "react-bootstrap";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import './UserProfile.css';
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
@@ -10,17 +10,23 @@ import ArticlesNavigator from "../../components/ArticlesNavigator";
 import { getArticlesLimit } from "../../constances";
 import ArticlesList from "../../components/ArticlesList";
 import { followUser, unFollowUser } from "../../actions/userActions";
+import { useSelector } from "react-redux";
 
-const UserProfile = ({ user }) => {
+const UserProfile = () => {
+    const user = useSelector(state => state.user.value);
     const { username } = useParams();
     const [profile, setProfile] = useState();
     const [articles, setArticles] = useState([]);
     const [articlesCount, setArticlesCount] = useState(0);
     const [offset, setOffset] = useState(0);
     const [loadingArticles, setLoadingArticles] = useState(false);
+    const [articleTab, setArticleTab] = useState('My Articles');
     const followButton = useRef();
+    const navigator = useNavigate();
+
 
     useEffect(() => {
+        setArticleTab('My Articles');
         const cancelToken = axios.CancelToken;
         const source = cancelToken.source();
         axios.get(`/profiles/${username}`, { cancelToken: source.token })
@@ -49,22 +55,27 @@ const UserProfile = ({ user }) => {
     }, [username])
 
     const handleFollow = () => {
-        followButton.current.setAttribute('disabled', true);
-        if (profile.following)
-            unFollowUser(profile.username)
-                .then(data => {
-                    setProfile(data.profile);
-                    followButton.current.removeAttribute('disabled');
-                })
-                .catch(err => console.log(err));
-        else followUser(profile.username).then(data => {
-            setProfile(data.profile);
-            followButton.current.removeAttribute('disabled');
-        }).catch(err => console.log(err));
+        if (!user) navigator('/register');
+        else {
+
+            followButton.current.setAttribute('disabled', true);
+            if (profile.following)
+                unFollowUser(profile.username)
+                    .then(data => {
+                        setProfile(data.profile);
+                        followButton.current.removeAttribute('disabled');
+                    })
+                    .catch(err => console.log(err));
+            else followUser(profile.username).then(data => {
+                setProfile(data.profile);
+                followButton.current.removeAttribute('disabled');
+            }).catch(err => console.log(err));
+        }
     }
 
     const handleViewArticles = (eventKey) => {
-        // console.log(eventKey)
+        setArticleTab(eventKey);
+        setArticles([]);
         setLoadingArticles(true);
         getArticles({ favorited: eventKey === 'Favorited Articles' ? profile.username : undefined, author: eventKey === 'My Articles' ? profile.username : undefined })
             .then(data => {
@@ -114,7 +125,7 @@ const UserProfile = ({ user }) => {
                         </Container>
                     </div>
                     <Container className="flex-grow-1 articles w-75 g-5">
-                        <ArticlesNavigator handleViewArticles={handleViewArticles} tabs={['My Articles', 'Favorited Articles']} />
+                        <ArticlesNavigator handleViewArticles={handleViewArticles} tabs={['My Articles', 'Favorited Articles']} activeKey={articleTab} />
                         <ArticlesList loading={loadingArticles} articles={articles} handleChangePage={handleChangePage} articlesCount={articlesCount} offset={offset} />
                     </Container>
                 </>)

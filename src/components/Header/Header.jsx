@@ -3,8 +3,11 @@ import { Link, useLocation } from "react-router-dom";
 import './Header.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGear, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
-const Header = ({ user }) => {
+import { useSelector } from "react-redux";
+const Header = () => {
     const location = useLocation();
+
+    const user = useSelector(state => state.user.value)
 
     return (
         <header className="py-2">

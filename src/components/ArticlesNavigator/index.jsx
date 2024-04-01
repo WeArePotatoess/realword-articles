@@ -1,17 +1,13 @@
-import { useRef } from "react";
 import { Nav } from "react-bootstrap";
 import './ArticlesNavigator.css';
 
 
-const ArticlesNavigator = ({ tabs, handleViewArticles }) => {
-    const navRef = useRef();
-
+const ArticlesNavigator = ({ tabs, activeKey, handleViewArticles }) => {
     return (
         <Nav
-            ref={navRef}
             variant="underline"
             className="gap-0"
-            defaultActiveKey={tabs[0]}
+            activeKey={activeKey}
             onSelect={(eventKey) => {
                 handleViewArticles(eventKey);
             }}

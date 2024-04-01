@@ -1,16 +1,18 @@
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { Button, Col, Container, Row } from "react-bootstrap";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import './ArticleDetail.css';
 import { format } from "date-fns";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import { followUser, unFollowUser } from "../../actions/userActions";
+import { useSelector } from "react-redux";
 
 
-const ArticleDetail = ({ user }) => {
+const ArticleDetail = () => {
+    const user = useSelector(state => state.user.value);
     const [article, setArticle] = useState();
     const params = useParams();
     const [newComment, setNewComment] = useState('');
@@ -20,6 +22,7 @@ const ArticleDetail = ({ user }) => {
     const [favorite, setFavorite] = useState();
     const favoriteButton = useRef();
     const commentButton = useRef();
+    const navigator = useNavigate();
 
     const getArticle = (slug) => {
         return axios.get('/articles/' + slug)
@@ -69,52 +72,58 @@ const ArticleDetail = ({ user }) => {
     }
 
     const handleFollow = () => {
-        followButton.current.setAttribute('disabled', true);
-        if (author.following)
-            unFollowUser(author.username)
+        if (!user) navigator('/register')
+        else {
+            followButton.current.setAttribute('disabled', true);
+            if (author.following)
+                unFollowUser(author.username)
+                    .then(data => {
+                        setAuthor(data.profile);
+                        followButton.current.removeAttribute('disabled');
+                    })
+                    .catch(err => {
+                        followButton.current.removeAttribute('disabled');
+                        console.log(err)
+                    });
+            else followUser(author.username)
                 .then(data => {
                     setAuthor(data.profile);
                     followButton.current.removeAttribute('disabled');
-                })
-                .catch(err => {
+                }).catch(err => {
                     followButton.current.removeAttribute('disabled');
-                    console.log(err)
+                    console.log(err);
                 });
-        else followUser(author.username)
-            .then(data => {
-                setAuthor(data.profile);
-                followButton.current.removeAttribute('disabled');
-            }).catch(err => {
-                followButton.current.removeAttribute('disabled');
-                console.log(err);
-            });
+        }
     }
 
     const handleToggleFavorite = () => {
-        favoriteButton.current.setAttribute('disabled', true);
-        if (favorite.favorited) {
-            axios.delete('/articles/' + params.slug + '/favorite')
-                .then(res => res.data)
-                .then(data => {
-                    setFavorite({ favorited: data.article.favorited, favoritesCount: data.article.favoritesCount });
-                    favoriteButton.current.removeAttribute('disabled');
-                })
-                .catch(err => {
-                    favoriteButton.current.removeAttribute('disabled');
-                    console.log(err)
-                });
-        }
+        if (!user) navigator('/register')
         else {
-            axios.post('/articles/' + params.slug + '/favorite')
-                .then(res => res.data)
-                .then(data => {
-                    setFavorite({ favorited: data.article.favorited, favoritesCount: data.article.favoritesCount });
-                    favoriteButton.current.removeAttribute('disabled');
-                })
-                .catch(err => {
-                    favoriteButton.current.removeAttribute('disabled');
-                    console.log(err)
-                });
+            favoriteButton.current.setAttribute('disabled', true);
+            if (favorite.favorited) {
+                axios.delete('/articles/' + params.slug + '/favorite')
+                    .then(res => res.data)
+                    .then(data => {
+                        setFavorite({ favorited: data.article.favorited, favoritesCount: data.article.favoritesCount });
+                        favoriteButton.current.removeAttribute('disabled');
+                    })
+                    .catch(err => {
+                        favoriteButton.current.removeAttribute('disabled');
+                        console.log(err)
+                    });
+            }
+            else {
+                axios.post('/articles/' + params.slug + '/favorite')
+                    .then(res => res.data)
+                    .then(data => {
+                        setFavorite({ favorited: data.article.favorited, favoritesCount: data.article.favoritesCount });
+                        favoriteButton.current.removeAttribute('disabled');
+                    })
+                    .catch(err => {
+                        favoriteButton.current.removeAttribute('disabled');
+                        console.log(err)
+                    });
+            }
         }
     }
 

@@ -18,7 +18,7 @@ const Article = ({ handleToggleFavorite, article, index }) => {
                     </div>
                 </Col>
                 <Col className="text-end">
-                    <Button variant={article.favorited ? 'success' : "outline-success"} className="favorite-article p-1" onClick={() => handleToggleFavorite(index, article.slug, article.favorited)} >
+                    <Button variant={article.favorited ? 'success' : "outline-success"} className="favorite-article p-1" onClick={(e) => handleToggleFavorite(e,index, article.slug, article.favorited)} >
                         <FontAwesomeIcon icon={faHeart} className="me-1" />
                         {article.favoritesCount}
                     </Button>
