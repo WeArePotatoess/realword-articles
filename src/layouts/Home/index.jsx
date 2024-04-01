@@ -18,60 +18,69 @@ const Home = () => {
     const [articleTab, setArticleTab] = useState('Your Feed');
     const [tags, setTags] = useState();
     const [articleTag, setArticleTag] = useState();
-    const cancelTokenSource = useMemo(() => { return axios.CancelToken.source() }, [])
+    const [cancelToken, setCancelToken] = useState(null);
 
 
     const handleViewArticles = (eventKey) => {
         setArticleTab(eventKey);
-        if (loadingArticles) cancelTokenSource.cancel('canceled previous request');
+        if (cancelToken) cancelToken.cancel('canceled previous request');
+        const newCancelToken = axios.CancelToken.source();
+        setCancelToken(newCancelToken);
         setArticles([]);
         setLoadingArticles(true);
-        getArticles({ author: eventKey === 'Your Feed' ? user.username : undefined, tag: tags.includes(eventKey.replace('#', '')) ? eventKey : undefined })
+        getArticles({ author: eventKey === 'Your Feed' ? user.username : undefined, tag: tags?.includes(eventKey.replace('#', '')) ? eventKey : undefined }, newCancelToken.token)
             .then(data => {
                 setArticles(data.articles);
                 setArticlesCount(data.articlesCount);
                 setLoadingArticles(false);
             })
             .catch(err => {
-                console.log(err)
+                if (!axios.isCancel(err))
+                    console.log(err)
                 setLoadingArticles(false)
             })
     }
 
     const handleChangePage = (page) => {
         // console.log(articleTab)
-        if (loadingArticles) cancelTokenSource.cancel('canceled previous request');
+        if (cancelToken) cancelToken.cancel('canceled previous request');
+        const newCancelToken = axios.CancelToken.source();
+        setCancelToken(newCancelToken);
         setLoadingArticles(true);
         setOffset((page - 1) * getArticlesLimit);
         setArticles([]);
-        getArticles({ author: articleTab === 'Your Feed' ? user.username : undefined, offset: (page - 1) * getArticlesLimit }, cancelTokenSource.token)
+        getArticles({ author: articleTab === 'Your Feed' ? user.username : undefined, offset: (page - 1) * getArticlesLimit }, newCancelToken.token)
             .then(data => {
                 setArticles(data.articles)
                 setLoadingArticles(false)
             })
             .catch(err => {
-                console.log(err)
+                if (!axios.isCancel(err))
+                    console.log(err)
                 setLoadingArticles(false)
             });
     }
 
     useEffect(() => {
+        const cancelToken = axios.CancelToken.source();
         if (!user) setArticleTab('Global Feed');
         setLoadingArticles(true);
-        getArticles({ author: articleTab === 'Your Feed' ? user?.username : undefined }, cancelTokenSource.token)
+        getArticles({ author: articleTab === 'Your Feed' ? user?.username : undefined }, cancelToken.token)
             .then(data => {
                 setArticles(data.articles);
                 setArticlesCount(data.articlesCount);
                 setLoadingArticles(false);
             })
             .catch(err => {
+                if (!axios.isCancel(err))
+                    console.log(err)
                 setLoadingArticles(false);
-                console.log(err)
             })
-        axios.get('/tags')
+        axios.get('/tags', { cancelToken: cancelToken.token })
             .then(res => res.data)
             .then(data => setTags(data.tags))
-            .catch(err => console.log(err))
+            .catch(err => { if (!axios.isCancel(err)) console.log(err) })
+        return () => cancelToken.cancel();
     }, [])
 
     return (<>

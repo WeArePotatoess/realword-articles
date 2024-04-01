@@ -32,7 +32,7 @@ function App() {
       .then(data => {
         dispatch(setUser(data.user));
       })
-      .catch(err => console.log(err));
+      .catch(err => { if (!axios.isCancel(err)) console.log(err) });
     return () => { source.cancel(); }
   }, [])
 

@@ -179,7 +179,6 @@ const ArticleDetail = () => {
                             <div className="w-50">
                                 <div className="w-100 d-flex flex-column">
                                     <textarea className="border w-100" value={newComment} onChange={e => setNewComment(e.target.value)}>
-
                                     </textarea>
                                     <div className=" bg-light border w-100 d-flex align-items-center justify-content-between p-2">
                                         <img src={user.image} alt="" className="rounded-circle" />

@@ -1,7 +1,7 @@
 import { Button, Container } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import './UserProfile.css';
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGear, faPlus } from "@fortawesome/free-solid-svg-icons";
@@ -23,6 +23,7 @@ const UserProfile = () => {
     const [articleTab, setArticleTab] = useState('My Articles');
     const followButton = useRef();
     const navigator = useNavigate();
+    const [cancelToken, setCancelToken] = useState(null);
 
 
     useEffect(() => {
@@ -34,7 +35,7 @@ const UserProfile = () => {
             .then(data => {
                 setProfile(data.profile);
             })
-            .catch(err => console.log(err));
+            .catch(err => { if (!axios.isCancel(err)) console.log(err) });
         return () => {
             source.cancel('Request canceled');
         }
@@ -57,7 +58,6 @@ const UserProfile = () => {
     const handleFollow = () => {
         if (!user) navigator('/register');
         else {
-
             followButton.current.setAttribute('disabled', true);
             if (profile.following)
                 unFollowUser(profile.username)
@@ -72,19 +72,22 @@ const UserProfile = () => {
             }).catch(err => console.log(err));
         }
     }
-
     const handleViewArticles = (eventKey) => {
+        if (cancelToken) cancelToken.cancel('cancel previous request');
+        const newCancelToken = axios.CancelToken.source()
+        setCancelToken(newCancelToken);
         setArticleTab(eventKey);
         setArticles([]);
         setLoadingArticles(true);
-        getArticles({ favorited: eventKey === 'Favorited Articles' ? profile.username : undefined, author: eventKey === 'My Articles' ? profile.username : undefined })
+        getArticles({ favorited: eventKey === 'Favorited Articles' ? profile.username : undefined, author: eventKey === 'My Articles' ? profile.username : undefined }, newCancelToken.token)
             .then(data => {
                 setArticlesCount(data.articlesCount);
                 setArticles(data.articles);
                 setLoadingArticles(false);
             })
             .catch(err => {
-                console.log(err)
+                if (!axios.isCancel(err))
+                    console.log(err)
                 setLoadingArticles(false)
             })
     }
