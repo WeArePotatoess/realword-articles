@@ -14,7 +14,7 @@ import { useEffect, useState } from 'react';
 
 function App() {
   axios.defaults.baseURL = "https://api.realworld.io/api";
-  axios.defaults.headers.common['Authorization'] = "Token " + localStorage.getItem('token') ? localStorage.getItem('token') : '';
+  axios.defaults.headers.common['Authorization'] = "Token " + (localStorage.getItem('token') != null ? localStorage.getItem('token') : '');
 
   const [user, setUser] = useState();
 
@@ -40,7 +40,7 @@ function App() {
         <Route path='/register' element={<SignUp setUser={setUser} />} />
         <Route path='/settings' element={<Settings />} />
         <Route path='/:username' element={<UserProfile user={user} />} />
-        <Route path='/article/:slug' element={<ArticleDetail />} />
+        <Route path='/article/:slug' element={<ArticleDetail user={user} />} />
         <Route path='/*' element={<Navigate to={'/'} />} />
       </Routes>
       <Footer />

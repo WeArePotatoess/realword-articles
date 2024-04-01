@@ -1,3 +1,48 @@
 .article-banner {
     background-color: #333;
 }
+
+.col.tags {
+    font-size: .8rem !important;
+}
+
+.user-not-loggedin a:not(:hover) {
+    text-decoration: none;
+}
+
+textarea {
+    min-height: 50px;
+    font-size: 1rem !important;
+}
+
+textarea:focus {
+    outline: none;
+}
+
+textarea+div img {
+    width: 30px;
+}
+
+textarea+div .btn {
+    font-size: .8rem;
+}
+
+.comment img {
+    width: 20px;
+}
+
+.comment a {
+    font-size: .8rem;
+}
+
+.comment a:not(:hover) {
+    text-decoration: none;
+}
+
+.comment span {
+    font-size: .8rem;
+}
+
+.delete-comment-btn{
+    cursor: pointer;
+}
