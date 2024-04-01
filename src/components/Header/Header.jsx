@@ -43,7 +43,7 @@ const Header = () => {
                             </Nav.Item>
                             <Nav.Item>
                                 <Link className={`nav-link text-black-50 ${location.pathname === `/${user.username}` ? 'active' : ""}`} to={`/${user.username}`}>
-                                    <img src={user?.image} alt="user avatar" className="rounded-circle me-1" />
+                                    <img src={user?.image} alt={user?.username} className="rounded-circle me-1" />
                                     {user.username}
                                 </Link>
                             </Nav.Item>

@@ -1,6 +1,6 @@
 import { Button, Col, Container, Row } from "react-bootstrap";
 import Banner from "../../components/Banner";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import ArticlesNavigator from "../../components/ArticlesNavigator";
 import ArticlesList from "../../components/ArticlesList";
 import { getArticles } from "../../actions/fetchData";

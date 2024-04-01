@@ -10,8 +10,8 @@ import Home from './layouts/Home';
 import Settings from './layouts/Settings';
 import UserProfile from './layouts/UserProfile';
 import ArticleDetail from './layouts/ArticleDetail';
-import { useEffect, useState } from 'react';
-import { UseSelector, useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { setUser } from './slices/userSlice';
 
 
@@ -19,8 +19,6 @@ function App() {
   axios.defaults.baseURL = "https://api.realworld.io/api";
   axios.defaults.headers.common['Authorization'] = "Token " + (localStorage.getItem('token') != null ? localStorage.getItem('token') : '');
 
-  // const [user, setUser] = useState();
-  const user = useSelector(state => state.user.value);
   const dispatch = useDispatch();
 
 
@@ -34,7 +32,7 @@ function App() {
       })
       .catch(err => { if (!axios.isCancel(err)) console.log(err) });
     return () => { source.cancel(); }
-  }, [])
+  }, [dispatch])
 
   return (
     <div className="App d-flex flex-column">

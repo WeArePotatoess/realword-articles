@@ -1,7 +1,7 @@
 import { Button, Container } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import './UserProfile.css';
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGear, faPlus } from "@fortawesome/free-solid-svg-icons";
@@ -114,7 +114,7 @@ const UserProfile = () => {
                 (<>
                     <div className="profile-banner mb-4">
                         <Container className="align-items-center py-3 d-flex flex-column w-75 g-5">
-                            <img src={profile.image} alt="user avatar" className="user-avatar mb-3" />
+                            <img src={profile.image} alt={profile.username} className="user-avatar mb-3" />
                             <h4 className="fw-bold">{profile?.username}</h4>
                             <p className="text-black-50">{profile?.bio}</p>
                             {profile?.username === user?.username ?
