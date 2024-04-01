@@ -5,3 +5,7 @@ header .nav-link:hover {
 .nav-item .active {
     color: black !important;
 }
+
+header img {
+    width: 30px;
+}
