@@ -5,7 +5,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import './ArticleDetail.css';
 import { format } from "date-fns";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faPen, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import { followUser, unFollowUser } from "../../actions/userActions";
 import { useSelector } from "react-redux";
@@ -127,6 +127,15 @@ const ArticleDetail = () => {
         }
     }
 
+    const handleDeleteArticle = (e) => {
+        e.target.setAttribute('disabled', true);
+        axios.delete('/articles/' + params.slug)
+            .then(() => {
+                navigator('/');
+            })
+            .catch(err => { console.log(err); e.target.removeAttribute('disabled'); })
+    }
+
     return (
         <>
             {article && <>
@@ -139,21 +148,36 @@ const ArticleDetail = () => {
                         </Row>
                         <Row>
                             <Col xs={2} className="d-flex align-items-center gap-2">
-                                <img src={author.image} alt="author avatar" className="rounded-circle" />
+                                <img src={author.image} alt="author avatar" className="author-avatar rounded-circle" />
                                 <div >
                                     <Link className="author text-white" to={"/" + author.username}>{author.username}</Link>
                                     <div className="created text-white-50">{format(new Date(article.createdAt), 'MMMM d, yyyy')}</div>
                                 </div>
                             </Col>
                             <Col className="d-flex align-items-center gap-2">
-                                <Button ref={followButton} onClick={handleFollow} variant={`${author.following ? 'secondary' : 'outline-secondary'} border-light`} className="d-flex align-items-center gap-1">
-                                    <FontAwesomeIcon icon={faPlus} />
-                                    {author.following ? "Unfollow" : "Follow"}  {author.username}
-                                </Button>
-                                <Button ref={favoriteButton} onClick={handleToggleFavorite} variant={`${favorite.favorited ? 'success' : 'outline-success'} border-success`} className="d-flex align-items-center gap-1">
-                                    <FontAwesomeIcon icon={faHeart} />
-                                    {favorite.favorited ? 'Unfavorite' : 'Favorite'} Article ({favorite.favoritesCount})
-                                </Button>
+                                {article.author.username === user?.username ?
+                                    <>
+                                        <Link to={'/editor/' + params.slug} className="btn btn-outline-secondary">
+                                            <FontAwesomeIcon icon={faPen} className="me-1" />
+                                            Edit Article
+                                        </Link>
+                                        <Button onClick={e => handleDeleteArticle(e)} variant="outline-danger">
+                                            <FontAwesomeIcon icon={faTrash} className="me-1" />
+                                            Delete Article
+                                        </Button>
+                                    </>
+                                    :
+                                    <>
+                                        <Button ref={followButton} onClick={handleFollow} variant={`${author.following ? 'secondary' : 'outline-secondary'} border-light`} className="d-flex align-items-center gap-1">
+                                            <FontAwesomeIcon icon={faPlus} />
+                                            {author.following ? "Unfollow" : "Follow"}  {author.username}
+                                        </Button>
+                                        <Button ref={favoriteButton} onClick={handleToggleFavorite} variant={`${favorite.favorited ? 'success' : 'outline-success'} border-success`} className="d-flex align-items-center gap-1">
+                                            <FontAwesomeIcon icon={faHeart} />
+                                            {favorite.favorited ? 'Unfavorite' : 'Favorite'} Article ({favorite.favoritesCount})
+                                        </Button>
+                                    </>
+                                }
                             </Col>
                         </Row>
                     </Container>

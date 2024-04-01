@@ -10,6 +10,10 @@ a.author:not(:hover) {
     text-decoration: none !important;
 }
 
+.author-avatar {
+    width: 40px;
+}
+
 .favorite-article {
     border-color: var(--banner-color) !important;
 }

@@ -11,7 +11,7 @@ const Article = ({ handleToggleFavorite, article, index }) => {
         <Container className="article py-3 border-top">
             <Row>
                 <Col className="d-flex align-items-center gap-2">
-                    <img src={article.author.image} alt="author avatar" className="rounded-circle" />
+                    <img src={article.author.image} alt="author avatar" className="author-avatar rounded-circle" />
                     <div >
                         <Link className="author" to={"/" + article.author.username}>{article.author.username}</Link>
                         <div className="created text-black-50">{format(new Date(article.createdAt), 'MMMM d, yyyy')}</div>
