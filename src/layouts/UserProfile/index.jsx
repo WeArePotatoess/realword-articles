@@ -73,6 +73,7 @@ const UserProfile = () => {
         }
     }
     const handleViewArticles = (eventKey) => {
+        setOffset(0);
         if (cancelToken) cancelToken.cancel('cancel previous request');
         const newCancelToken = axios.CancelToken.source()
         setCancelToken(newCancelToken);
