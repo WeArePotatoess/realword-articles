@@ -29,17 +29,28 @@ const Home = () => {
         setCancelToken(newCancelToken);
         setArticles([]);
         setLoadingArticles(true);
-        getArticles({ author: eventKey === 'Your Feed' ? user.username : undefined, tag: tags?.includes(selectedTag) ? selectedTag : '' }, newCancelToken.token)
-            .then(data => {
-                setArticles(data.articles);
-                setArticlesCount(data.articlesCount);
-                setLoadingArticles(false);
-            })
-            .catch(err => {
-                if (!axios.isCancel(err))
-                    console.log(err)
-                setLoadingArticles(false)
-            })
+        if (eventKey === 'Your Feed') {
+            axios.get('/articles/feed')
+                .then(res => res.data)
+                .then(data => {
+                    setArticlesCount(data.articlesCount);
+                    setArticles(data.articles);
+                    setLoadingArticles(false);
+                })
+                .catch(err => { console.log(err); setLoadingArticles(false) })
+        }
+        else
+            getArticles({ tag: tags?.includes(selectedTag) ? selectedTag : '' }, newCancelToken.token)
+                .then(data => {
+                    setArticles(data.articles);
+                    setArticlesCount(data.articlesCount);
+                    setLoadingArticles(false);
+                })
+                .catch(err => {
+                    if (!axios.isCancel(err))
+                        console.log(err)
+                    setLoadingArticles(false)
+                })
     }
     const handleChangePage = (page) => {
         if (cancelToken) cancelToken.cancel('canceled previous request');
@@ -48,16 +59,26 @@ const Home = () => {
         setLoadingArticles(true);
         setOffset((page - 1) * getArticlesLimit);
         setArticles([]);
-        getArticles({ author: currentFeed === 'Your Feed' ? user.username : undefined, offset: (page - 1) * getArticlesLimit, tag: currentFeed.replace('#', '') === tagFilter ? tagFilter : undefined }, newCancelToken.token)
-            .then(data => {
-                setArticles(data.articles)
-                setLoadingArticles(false)
-            })
-            .catch(err => {
-                if (!axios.isCancel(err))
-                    console.log(err)
-                setLoadingArticles(false)
-            });
+        if (currentFeed === 'Your Feed') {
+            axios.get(`/articles/feed?offset=${(page - 1) * getArticlesLimit}&limit=${getArticlesLimit}`, { cancelToken: newCancelToken.token })
+                .then(res => res.data)
+                .then(data => {
+                    setArticlesCount(data.articlesCount);
+                    setArticles(data.articles);
+                    setLoadingArticles(false);
+                })
+                .catch(err => { console.log(err); setLoadingArticles(false) })
+        } else
+            getArticles({ offset: (page - 1) * getArticlesLimit, tag: currentFeed.replace('#', '') === tagFilter ? tagFilter : undefined }, newCancelToken.token)
+                .then(data => {
+                    setArticles(data.articles)
+                    setLoadingArticles(false)
+                })
+                .catch(err => {
+                    if (!axios.isCancel(err))
+                        console.log(err)
+                    setLoadingArticles(false)
+                });
     }
     const viewArticlesWithTag = (tag) => {
         setTagFilter(tag);
@@ -70,17 +91,28 @@ const Home = () => {
         if (!user) setCurrentFeed('Global Feed')
         else setCurrentFeed('Your Feed')
         setLoadingArticles(true);
-        getArticles({ author: user ? user?.username : undefined }, cancelToken.token)
-            .then(data => {
-                setArticles(data.articles);
-                setArticlesCount(data.articlesCount);
-                setLoadingArticles(false);
-            })
-            .catch(err => {
-                if (!axios.isCancel(err))
-                    console.log(err)
-                setLoadingArticles(false);
-            })
+        if (user) {
+            axios.get('/articles/feed')
+                .then(res => res.data)
+                .then(data => {
+                    setArticlesCount(data.articlesCount);
+                    setArticles(data.articles);
+                    setLoadingArticles(false);
+                })
+                .catch(err => { console.log(err); setLoadingArticles(false) })
+        }
+        else
+            getArticles({}, cancelToken.token)
+                .then(data => {
+                    setArticles(data.articles);
+                    setArticlesCount(data.articlesCount);
+                    setLoadingArticles(false);
+                })
+                .catch(err => {
+                    if (!axios.isCancel(err))
+                        console.log(err)
+                    setLoadingArticles(false);
+                })
         axios.get('/tags', { cancelToken: cancelToken.token })
             .then(res => res.data)
             .then(data => setTags(data.tags))
