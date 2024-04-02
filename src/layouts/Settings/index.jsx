@@ -33,7 +33,7 @@ const Settings = () => {
     return (
         <Container className="w-75 flex-grow-1 text-center">
             {user &&
-                <Formik onSubmit={(value) => handleSubmit(value)} initialValues={{ email: '', password: '', username: user.username, bio: user.bio, image: user?.image }}>
+                <Formik onSubmit={(value) => handleSubmit(value)} initialValues={{ email: '', password: '', username: user.username, bio: user.bio ? user.bio : '', image: user?.image }}>
                     <Form className="w-75 m-auto border-bottom pb-3 mt-5 d-flex flex-column align-items-center gap-3">
                         <h1 className="fw-light">Your Settings</h1>
                         <Field className={'form-control fs-4'} id='image' name='image' placeholder='URL of profile picture' />
