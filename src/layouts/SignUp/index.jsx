@@ -28,10 +28,11 @@ const SignUp = () => {
                 setSigningUp(false); setErr([]);
                 localStorage.setItem('token', data.user.token);
                 dispatch(setUser(data.user));
+                axios.defaults.headers.common['Authorization'] = 'Token ' + data.user.token
                 navigate('/');
             })
             .catch(e => e.response.data.errors)
-            .then(errors => {
+            .catch(errors => {
                 setSigningUp(false);
                 setErr([Object.entries(errors)[0][0] + " " + Object.entries(errors)[0][1]])
             });

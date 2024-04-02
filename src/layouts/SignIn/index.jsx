@@ -26,6 +26,7 @@ const SignIn = () => {
                 setErr([]);
                 dispatch(setUser(data.user))
                 localStorage.setItem('token', data.user.token);
+                axios.defaults.headers.common['Authorization'] = 'Token ' + data.user.token
                 navigate('/');
             })
             .catch(e => e.response.data.errors)
