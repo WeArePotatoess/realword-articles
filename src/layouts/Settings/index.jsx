@@ -27,6 +27,8 @@ const Settings = () => {
     const handleLogout = () => {
         localStorage.clear();
         dispatch(setUser());
+        axios.defaults.headers.common['Authorization'] = '';
+
         navigator('/');
     }
 
