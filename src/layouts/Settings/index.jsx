@@ -5,13 +5,17 @@ import { useNavigate } from "react-router-dom";
 import { setUser } from "../../slices/userSlice";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 const Settings = () => {
     const user = useSelector(state => state.user.value);
     const navigator = useNavigate();
     const dispatch = useDispatch();
     const updateSettingsButton = useRef();
+
+useEffect(()=>{
+if(!user) navigator('/');
+},[navigator,user])
 
     const handleSubmit = (values) => {
         updateSettingsButton.current.setAttribute('disabled', true);
