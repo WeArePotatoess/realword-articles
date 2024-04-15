@@ -1,11 +1,12 @@
 import axios from "axios";
 import { useState } from "react";
 import { Button, Container, Form } from "react-bootstrap";
-import { useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { setUser } from "../../slices/userSlice";
 
 const SignIn = () => {
+    const user = useSelector(state => state.user.value);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -15,6 +16,7 @@ const SignIn = () => {
     });
     const [signingIn, setSigningIn] = useState(false);
     const [err, setErr] = useState({});
+
 
     const handleSignIn = (e) => {
         e.preventDefault();
@@ -38,6 +40,7 @@ const SignIn = () => {
         // console.log(signInInfo)
     }
     return (
+        user? <Navigate to={'/'}/>:
         <Container className="flex-grow-1">
             <Form onSubmit={handleSignIn} className="m-auto my-2 d-flex flex-column align-items-center gap-3 w-50">
                 <div>
