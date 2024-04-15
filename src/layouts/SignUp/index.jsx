@@ -1,14 +1,14 @@
 import { Button, Container, Form } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import './SignUp.css'
 import { useState } from "react";
 import axios from "axios";
 import { setUser } from "../../slices/userSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 
 const SignUp = () => {
-
+    const user = useSelector(state => state.user.value);
     const [signUpInfo, setSignUpInfo] = useState({
         username: '',
         email: '',
@@ -18,6 +18,7 @@ const SignUp = () => {
     const [err, setErr] = useState({});
     const navigate = useNavigate();
     const dispatch = useDispatch();
+
 
     const handleSignUp = (e) => {
         e.preventDefault();
@@ -36,14 +37,14 @@ const SignUp = () => {
                 setSigningUp(false);
                 setErr([Object.entries(errors)[0][0] + " " + Object.entries(errors)[0][1]])
             });
-        // console.log(signUpInfo)
     }
     return (
+        user? <Navigate to={'/'}/>:
         <Container className="flex-grow-1">
             <Form onSubmit={handleSignUp} className="m-auto my-2 d-flex flex-column align-items-center gap-3 w-50">
                 <div>
                     <h1 className="fw-normal">Sign Up</h1>
-                    <Link to={'/signin'} className="link-success">Have an account?</Link>
+                    <Link to={'/login'} className="link-success">Have an account?</Link>
                 </div>
                 {err.length > 0 && <ul className="error fw-bold text-danger align-self-start m-0">
                     {err.map(err => {
