@@ -43,6 +43,7 @@ function App() {
       </Container>
       <Routes>
         <Route path='/' element={<Home />} />
+        {/* <Route path='/realword-articles' element={<Home />} /> */}
         <Route path='/home' element={<Navigate to={'/'} />} />
         <Route path='/login' element={<SignIn />} />
         <Route path='/register' element={<SignUp />} />
