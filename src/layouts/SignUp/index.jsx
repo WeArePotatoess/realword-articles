@@ -33,7 +33,7 @@ const SignUp = () => {
                 navigate('/');
             })
             .catch(e => e.response.data.errors)
-            .catch(errors => {
+            .then(errors => {
                 setSigningUp(false);
                 setErr([Object.entries(errors)[0][0] + " " + Object.entries(errors)[0][1]])
             });

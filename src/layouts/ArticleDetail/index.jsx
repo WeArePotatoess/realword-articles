@@ -14,12 +14,13 @@ import { useSelector } from "react-redux";
 const ArticleDetail = () => {
     const user = useSelector(state => state.user.value);
     const [article, setArticle] = useState();
-    const params = useParams();
     const [newComment, setNewComment] = useState('');
     const [comments, setComments] = useState();
-    const followButton = useRef();
     const [author, setAuthor] = useState();
     const [favorite, setFavorite] = useState();
+    const [loading, setLoading] = useState(true);
+    const params = useParams();
+    const followButton = useRef();
     const favoriteButton = useRef();
     const commentButton = useRef();
     const navigator = useNavigate();
@@ -31,8 +32,13 @@ const ArticleDetail = () => {
                 setAuthor(data.article.author);
                 setFavorite({ favorited: data.article.favorited, favoritesCount: data.article.favoritesCount });
                 setArticle(data.article);
+                setLoading(false);
             })
-            .catch(err => console.log(err))
+            .catch(err => {
+                setArticle(undefined)
+                setLoading(false);
+                console.log(err)
+            })
     }
 
     const getComments = (slug) => {
@@ -46,9 +52,6 @@ const ArticleDetail = () => {
         getArticle(params.slug);
         getComments(params.slug);
     }, [params.slug])
-
-
-
 
     const handlePostComment = () => {
         commentButton.current.setAttribute('disabled', true);
@@ -136,104 +139,105 @@ const ArticleDetail = () => {
             .catch(err => { console.log(err); e.target.removeAttribute('disabled'); })
     }
 
-    return (
-        <>
-            {article && <>
-                <div className="article-banner text-white">
-                    <Container className="w-75 pb-4">
-                        <Row>
-                            <h1 className="p-4">
-                                {article.title}
-                            </h1>
-                        </Row>
-                        <Row>
-                            <Col xs={2} className="d-flex align-items-center gap-2">
-                                <img src={author.image} alt="author avatar" className="author-avatar rounded-circle" />
-                                <div >
-                                    <Link className="author text-white" to={"/" + author.username}>{author.username}</Link>
-                                    <div className="created text-white-50">{format(new Date(article.createdAt), 'MMMM d, yyyy')}</div>
-                                </div>
-                            </Col>
-                            <Col className="d-flex align-items-center gap-2">
-                                {article.author.username === user?.username ?
-                                    <>
-                                        <Link to={'/editor/' + params.slug} className="btn btn-outline-secondary">
-                                            <FontAwesomeIcon icon={faPen} className="me-1" />
-                                            Edit Article
-                                        </Link>
-                                        <Button onClick={e => handleDeleteArticle(e)} variant="outline-danger">
-                                            <FontAwesomeIcon icon={faTrash} className="me-1" />
-                                            Delete Article
-                                        </Button>
-                                    </>
-                                    :
-                                    <>
-                                        <Button ref={followButton} onClick={handleFollow} variant={`${author.following ? 'secondary' : 'outline-secondary'} border-light`} className="d-flex align-items-center gap-1">
-                                            <FontAwesomeIcon icon={faPlus} />
-                                            {author.following ? "Unfollow" : "Follow"}  {author.username}
-                                        </Button>
-                                        <Button ref={favoriteButton} onClick={handleToggleFavorite} variant={`${favorite.favorited ? 'success' : 'outline-success'} border-success`} className="d-flex align-items-center gap-1">
-                                            <FontAwesomeIcon icon={faHeart} />
-                                            {favorite.favorited ? 'Unfavorite' : 'Favorite'} Article ({favorite.favoritesCount})
-                                        </Button>
-                                    </>
-                                }
-                            </Col>
-                        </Row>
-                    </Container>
-                </div>
-                <Container className="flex-grow-1 w-75 p-4 fs-5">
-                    <Row className="mb-4 flex-column gap-3 border-bottom pb-5">
-                        <Col>
-                            {article.description}
-                        </Col>
-                        <Col>
-                            {article.body}
-                        </Col>
-                        <Col className="tags d-flex gap-2 text-black-50">
-                            {article.tagList.map(tag => {
-                                return (<div key={tag} className="border p-2 rounded-5">
-                                    {tag}
-                                </div>)
-                            })}
-                        </Col>
+    return (<>
+        {loading && <Container className="w-75 h4 flex-grow-1">Loading article...</Container>}
+        {!loading && !article && <Container className="w-75 h4 text-danger flex-grow-1">Failed to load data</Container>}
+        {!loading && article && <>
+            <div className="article-banner text-white">
+                <Container className="w-75 pb-4">
+                    <Row>
+                        <h1 className="p-4">
+                            {article.title}
+                        </h1>
                     </Row>
-                    <Row className="justify-content-center">
-                        {user ?
-                            <div className="w-50">
-                                <div className="w-100 d-flex flex-column">
-                                    <textarea className="border w-100" value={newComment} onChange={e => setNewComment(e.target.value)}>
-                                    </textarea>
-                                    <div className=" bg-light border w-100 d-flex align-items-center justify-content-between p-2">
-                                        <img src={user.image} alt="" className="rounded-circle" />
-                                        <Button ref={commentButton} variant="success fw-bold" onClick={handlePostComment}>Post comment</Button>
-                                    </div>
-                                </div>
-                                {comments?.map(comment => {
-                                    return (
-                                        <div key={comment.id} className="comment w-100 d-flex flex-column my-3">
-                                            <div className="border w-100 p-2 fs-6">
-                                                {comment.body}
-                                            </div>
-                                            <div className=" bg-light border w-100 d-flex align-items-center justify-content-between p-2">
-                                                <div className="d-flex gap-1">
-                                                    <img src={user.image} alt="" className="rounded-circle" />
-                                                    <Link className="text-black-50" to={`/${comment.author.username}`}>{comment.author.username}</Link>
-                                                    <span className="text-black-50">{format(new Date(comment.createdAt), 'MMMM d, yyyy')}</span>
-                                                </div>
-                                                {comment.author.username === user.username &&
-                                                    <FontAwesomeIcon className="delete-comment-btn text-black-50" icon={faTrash} onClick={(e) => handleDeleteComment(e, comment.id)} />}
-                                            </div>
-                                        </div>
-                                    )
-                                })}
+                    <Row>
+                        <Col xs={2} className="d-flex align-items-center gap-2">
+                            <img src={author.image} alt="author avatar" className="author-avatar rounded-circle" />
+                            <div >
+                                <Link className="author text-white" to={"/" + author.username}>{author.username}</Link>
+                                <div className="created text-white-50">{format(new Date(article.createdAt), 'MMMM d, yyyy')}</div>
                             </div>
-                            : <div className="user-not-loggedin fs-6 w-auto"><Link to={'/login'} className="text-success">Sign in </Link>or<Link className="text-success" to={'/register'}> Sign up</Link>  to add comments on this article.</div>}
+                        </Col>
+                        <Col className="d-flex align-items-center gap-2">
+                            {article.author.username === user?.username ?
+                                <>
+                                    <Link to={'/editor/' + params.slug} className="btn btn-outline-secondary">
+                                        <FontAwesomeIcon icon={faPen} className="me-1" />
+                                        Edit Article
+                                    </Link>
+                                    <Button onClick={e => handleDeleteArticle(e)} variant="outline-danger">
+                                        <FontAwesomeIcon icon={faTrash} className="me-1" />
+                                        Delete Article
+                                    </Button>
+                                </>
+                                :
+                                <>
+                                    <Button ref={followButton} onClick={handleFollow} variant={`${author.following ? 'secondary' : 'outline-secondary'} border-light`} className="d-flex align-items-center gap-1">
+                                        <FontAwesomeIcon icon={faPlus} />
+                                        {author.following ? "Unfollow" : "Follow"}  {author.username}
+                                    </Button>
+                                    <Button ref={favoriteButton} onClick={handleToggleFavorite} variant={`${favorite.favorited ? 'success' : 'outline-success'} border-success`} className="d-flex align-items-center gap-1">
+                                        <FontAwesomeIcon icon={faHeart} />
+                                        {favorite.favorited ? 'Unfavorite' : 'Favorite'} Article ({favorite.favoritesCount})
+                                    </Button>
+                                </>
+                            }
+                        </Col>
                     </Row>
                 </Container>
-            </>}
+            </div>
+            <Container className="flex-grow-1 w-75 p-4 fs-5">
+                <Row className="mb-4 flex-column gap-3 border-bottom pb-5">
+                    <Col>
+                        {article.description}
+                    </Col>
+                    <Col>
+                        {article.body}
+                    </Col>
+                    <Col className="tags d-flex gap-2 text-black-50">
+                        {article.tagList.map(tag => {
+                            return (<div key={tag} className="border p-2 rounded-5">
+                                {tag}
+                            </div>)
+                        })}
+                    </Col>
+                </Row>
+                <Row className="justify-content-center">
+                    {user ?
+                        <div className="w-50">
+                            <div className="w-100 d-flex flex-column">
+                                <textarea className="border w-100" value={newComment} onChange={e => setNewComment(e.target.value)}>
+                                </textarea>
+                                <div className=" bg-light border w-100 d-flex align-items-center justify-content-between p-2">
+                                    <img src={user.image} alt="" className="rounded-circle" />
+                                    <Button ref={commentButton} variant="success fw-bold" onClick={handlePostComment}>Post comment</Button>
+                                </div>
+                            </div>
+                            {comments?.map(comment => {
+                                return (
+                                    <div key={comment.id} className="comment w-100 d-flex flex-column my-3">
+                                        <div className="border w-100 p-2 fs-6">
+                                            {comment.body}
+                                        </div>
+                                        <div className=" bg-light border w-100 d-flex align-items-center justify-content-between p-2">
+                                            <div className="d-flex gap-1">
+                                                <img src={user.image} alt="" className="rounded-circle" />
+                                                <Link className="text-black-50" to={`/${comment.author.username}`}>{comment.author.username}</Link>
+                                                <span className="text-black-50">{format(new Date(comment.createdAt), 'MMMM d, yyyy')}</span>
+                                            </div>
+                                            {comment.author.username === user.username &&
+                                                <FontAwesomeIcon className="delete-comment-btn text-black-50" icon={faTrash} onClick={(e) => handleDeleteComment(e, comment.id)} />}
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                        </div>
+                        : <div className="user-not-loggedin fs-6 w-auto"><Link to={'/login'} className="text-success">Sign in </Link>or<Link className="text-success" to={'/register'}> Sign up</Link>  to add comments on this article.</div>}
+                </Row>
+            </Container>
+        </>}
+    </>
 
-        </>
     );
 }
 

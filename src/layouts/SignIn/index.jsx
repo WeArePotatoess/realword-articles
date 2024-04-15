@@ -45,7 +45,7 @@ const SignIn = () => {
             <Form onSubmit={handleSignIn} className="m-auto my-2 d-flex flex-column align-items-center gap-3 w-50">
                 <div>
                     <h1 className="fw-normal">Sign In</h1>
-                    <Link to={'/signup'} className="link-success">Need an account?</Link>
+                    <Link to={'/register'} className="link-success">Need an account?</Link>
                 </div>
                 {err.length > 0 && <ul className="error fw-bold text-danger align-self-start m-0">
                     {err.map(err => {
