@@ -55,7 +55,7 @@ const Editor = () => {
                     <Form className="w-75 m-auto mt-5 d-flex flex-column gap-3">
                         <Field className='form-control fs-4' name='title' id='title' placeholder='Article Title' />
                         <Field className='form-control fs-6' name='description' id='description' placeholder="What's this articel about?" />
-                        <Field className='form-control fs-6' name='body' id='body' placeholder='Write your article (in markdown)' />
+                        <Field as={'textarea'} rows={4} className='form-control fs-6' name='body' id='body' placeholder='Write your article (in markdown)' />
                         <Field className='form-control fs-6' name='tagList' id='tagList' placeholder='Enter tags' />
                         <Button ref={submitBtn} className="align-self-end fs-4" type="submit" variant="success">Publish Article</Button>
                         {error && <p className="fs-5 text-danger">{error}</p>}
@@ -66,7 +66,7 @@ const Editor = () => {
                     <Form className="w-75 m-auto mt-5 d-flex flex-column gap-3">
                         <Field className='form-control fs-4' name='title' id='title' placeholder='Article Title' />
                         <Field className='form-control fs-6' name='description' id='description' placeholder="What's this articel about?" />
-                        <Field className='form-control fs-6' name='body' id='body' placeholder='Write your article (in markdown)' />
+                        <Field as={'textarea'} className='form-control fs-6' name='body' id='body' placeholder='Write your article (in markdown)' />
                         <Field className='form-control fs-6' name='tagList' id='tagList' placeholder='Enter tags' />
                         <Button ref={submitBtn} className="align-self-end fs-4" type="submit" variant="success">Publish Article</Button>
                         {error && <p className="fs-5 text-danger">{error}</p>}
