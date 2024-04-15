@@ -78,7 +78,7 @@ const ArticleDetail = () => {
         if (!user) navigator('/register')
         else {
             followButton.current.setAttribute('disabled', true);
-            if (author.following)
+            if (author?.following)
                 unFollowUser(author.username)
                     .then(data => {
                         setAuthor(data.profile);
@@ -88,7 +88,7 @@ const ArticleDetail = () => {
                         followButton.current.removeAttribute('disabled');
                         console.log(err)
                     });
-            else followUser(author.username)
+            else followUser(author?.username)
                 .then(data => {
                     setAuthor(data.profile);
                     followButton.current.removeAttribute('disabled');
@@ -103,7 +103,7 @@ const ArticleDetail = () => {
         if (!user) navigator('/register')
         else {
             favoriteButton.current.setAttribute('disabled', true);
-            if (favorite.favorited) {
+            if (favorite?.favorited) {
                 axios.delete('/articles/' + params.slug + '/favorite')
                     .then(res => res.data)
                     .then(data => {
@@ -152,9 +152,9 @@ const ArticleDetail = () => {
                     </Row>
                     <Row>
                         <Col xs={2} className="d-flex align-items-center gap-2">
-                            <img src={author.image} alt="author avatar" className="author-avatar rounded-circle" />
+                            <img src={author?.image} alt="author avatar" className="author-avatar rounded-circle" />
                             <div >
-                                <Link className="author text-white" to={"/" + author.username}>{author.username}</Link>
+                                <Link className="author text-white" to={"/" + author?.username}>{author?.username}</Link>
                                 <div className="created text-white-50">{format(new Date(article.createdAt), 'MMMM d, yyyy')}</div>
                             </div>
                         </Col>
@@ -172,13 +172,13 @@ const ArticleDetail = () => {
                                 </>
                                 :
                                 <>
-                                    <Button ref={followButton} onClick={handleFollow} variant={`${author.following ? 'secondary' : 'outline-secondary'} border-light`} className="d-flex align-items-center gap-1">
+                                    <Button ref={followButton} onClick={handleFollow} variant={`${author?.following ? 'secondary' : 'outline-secondary'} border-light`} className="d-flex align-items-center gap-1">
                                         <FontAwesomeIcon icon={faPlus} />
-                                        {author.following ? "Unfollow" : "Follow"}  {author.username}
+                                        {author?.following ? "Unfollow" : "Follow"}  {author?.username}
                                     </Button>
-                                    <Button ref={favoriteButton} onClick={handleToggleFavorite} variant={`${favorite.favorited ? 'success' : 'outline-success'} border-success`} className="d-flex align-items-center gap-1">
+                                    <Button ref={favoriteButton} onClick={handleToggleFavorite} variant={`${favorite?.favorited ? 'success' : 'outline-success'} border-success`} className="d-flex align-items-center gap-1">
                                         <FontAwesomeIcon icon={faHeart} />
-                                        {favorite.favorited ? 'Unfavorite' : 'Favorite'} Article ({favorite.favoritesCount})
+                                        {favorite?.favorited ? 'Unfavorite' : 'Favorite'} Article ({favorite?.favoritesCount})
                                     </Button>
                                 </>
                             }
